@@ -2,6 +2,7 @@
 # Sukhjit Kaur
 
 # Import packages and libraries
+from ttictoc import tic,toc
 import struct
 import numpy as np
 import seaborn as sns
@@ -181,7 +182,7 @@ ridge.fit(X_subtrain_18_proj, y_subtrain_18)
 # Predictions for training and scores
 train_predict_18 = ridge.predict(X_subtrain_18_proj)
 train_pred_acc_18 = accuracy_score(y_subtrain_18, train_predict_18)
-
+mse_18_train = mean_squared_error(y_subtrain_18, train_predict_18)
 #Predictions for test and scores
 test_predict_18 = ridge.predict(X_subtest_18_proj)
 test_pred_acc_18 = accuracy_score(y_subtest_18, test_predict_18)
@@ -198,8 +199,9 @@ plot_confusion_matrix(cm_18, ['1', '8'], "Confusion Matrix - Digits 1 and 8")
 # Display results for 1,8 pair
 print(f"Cross-validation accuracy for 1,8: {mean_cv_score_18:.4f} ± {std_cv_score_18:.4f}")
 print(f"Training accuracy for 1,8: {100*train_pred_acc_18:.4f}%")
+print(f"Training MSE for 1,8: {mse_18_train:.4f}")
 print(f"Test accuracy for 1,8: {100*test_pred_acc_18:.4f}%")
-
+print(f"Test MSE for 1,8: {mse_18_test:.4f}")
 
 
 ## TASK 5 - Train classifier with 3,8 and 2,7 pairs ##
@@ -225,11 +227,11 @@ ridge.fit(X_subtrain_38_proj, y_subtrain_38)
 
 train_predict_38 = ridge.predict(X_subtrain_38_proj)
 train_pred_acc_38 = accuracy_score(y_subtrain_38, train_predict_38)
-
+mse_38_train = mean_squared_error(y_subtrain_38, train_predict_38)
 #Predictions for test and scores
 test_predict_38 = ridge.predict(X_subtest_38_proj)
 test_pred_acc_38 = accuracy_score(y_subtest_38, test_predict_38)
-
+mse_38_test = mean_squared_error(y_subtest_38, test_predict_38)
 # Cross-validation
 cv_scores_38 = cross_val_score(ridge, X_subtrain_38_proj, y_subtrain_38, cv=5)
 mean_cv_score_38 = cv_scores_38.mean()
@@ -241,8 +243,9 @@ plot_confusion_matrix(cm_38, ['3', '8'],"Confusion Matrix - Digits 3 and 8 ")
 # Display results for 3,8 pair
 print(f"Cross-validation accuracy for 3,8: {mean_cv_score_38:.4f} ± {std_cv_score_38:.4f}")
 print(f"Training accuracy for 3,8: {100*train_pred_acc_38:.4f}%")
+print(f"Training MSE for 3,8: {mse_38_train:.4f}")
 print(f"Test accuracy for 3,8: {100*test_pred_acc_38:.4f}%")
-
+print(f"Test MSE for 3,8: {mse_38_test:.4f}")
 # For 2,7 pair
 X_subtrain_27, y_subtrain_27 = select_digits(Xtraindata_pca, ytrainlabels, 2,7)
 X_subtest_27, y_subtest_27 = select_digits(Xtestdata, ytestlabels, 2,7)
@@ -267,11 +270,11 @@ ridge.fit(X_subtrain_27_proj, y_subtrain_27)
 # Predictions for training and scores
 train_predict_27 = ridge.predict(X_subtrain_27_proj)
 train_pred_acc_27 = accuracy_score(y_subtrain_27, train_predict_27)
-
+mse_27_train = mean_squared_error(y_subtrain_27, train_predict_27)
 #Predictions for test and scores
 test_predict_27 = ridge.predict(X_subtest_27_proj)
 test_pred_acc_27 = accuracy_score(y_subtest_27, test_predict_27)
-
+mse_27_test = mean_squared_error(y_subtest_27, test_predict_27)
 # Cross-validation
 cv_scores_27 = cross_val_score(ridge, X_subtrain_27_proj, y_subtrain_27, cv=5)
 mean_cv_score_27 = cv_scores_27.mean()
@@ -283,8 +286,9 @@ plot_confusion_matrix(cm_27, ['2', '7'],"Confusion Matrix - Digits 2 and 7")
 # Display results for 2,7 pair
 print(f"Cross-validation accuracy for 2,7: {mean_cv_score_27:.4f} ± {std_cv_score_27:.4f}")
 print(f"Training accuracy for 2,7: {100*train_pred_acc_27:.4f}%")
+print(f"Training MSE for 2, 7: {mse_27_train:.4f}")
 print(f"Test accuracy for 2,7: {100*test_pred_acc_27:.4f}%")
-
+print(f"Test MSE for 2, 7: {mse_27_test:.4f}")
 # TASK 6 - other classifiers ##
 # Project training and test data onto k PCA components (85% energy)
 k = n
@@ -292,8 +296,10 @@ Xtrain_proj = pca.transform(Xtraindata)[:, :k]
 Xtest_proj = pca.transform(Xtestdata)[:, :k]
 
 # Ridge Classifier
+tic()
 ridge_multi = RidgeClassifier(alpha=1.0)
 ridge_multi.fit(Xtrain_proj, ytrainlabels)
+print(toc())
 ridge_train_acc = ridge_multi.score(Xtrain_proj, ytrainlabels)
 ridge_test_acc = ridge_multi.score(Xtest_proj, ytestlabels)
 # Ridge Regression Confusion Matrix
@@ -303,8 +309,10 @@ print(f"Ridge Classifier - Training accuracy: {100*ridge_train_acc:.4f}%")
 print(f"Ridge Classifer - Test accuracy: {100*ridge_test_acc:.4f}%")
 
 # K-Nearest Neighbors
+tic()
 knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit(Xtrain_proj, ytrainlabels)
+print(toc())
 knn_train_acc = knn.score(Xtrain_proj, ytrainlabels)
 knn_test_acc = knn.score(Xtest_proj, ytestlabels)
 # KNN confusion matrix
@@ -314,8 +322,10 @@ print(f"KNN - Training accuracy: {100*knn_train_acc:.4f}%")
 print(f"KNN - Test accuracy: {100*knn_test_acc:.4f}%")
 
 # Linear Discriminant Analysis
+tic()
 lda = LinearDiscriminantAnalysis()
 lda.fit(Xtrain_proj, ytrainlabels)
+print(toc())
 lda_train_acc = lda.score(Xtrain_proj, ytrainlabels)
 lda_test_acc = lda.score(Xtest_proj, ytestlabels)
 # LDA confusion matrix
